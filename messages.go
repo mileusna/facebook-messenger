@@ -59,7 +59,7 @@ type textMessageContent struct {
 }
 
 type genericMessageContent struct {
-	Attachment *Attachment `json:"attachment,omitempty"`
+	Attachment *attachment `json:"attachment,omitempty"`
 }
 
 // type MessageData struct {
@@ -67,7 +67,7 @@ type genericMessageContent struct {
 // 	Attachment *Attachment `json:"attachment,omitempty"`
 // }
 
-type Attachment struct {
+type attachment struct {
 	Type    string  `json:"type,omitempty"`
 	Payload payload `json:"payload,omitempty"`
 }
@@ -110,7 +110,7 @@ func NewGenericMessage(receiverID int64) GenericMessage {
 	return GenericMessage{
 		Recipient: recipient{ID: receiverID},
 		Message: genericMessageContent{
-			Attachment: &Attachment{
+			Attachment: &attachment{
 				Type:    "template",
 				Payload: payload{TemplateType: "generic"},
 			},

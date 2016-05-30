@@ -5,7 +5,7 @@ import "fmt"
 // FacebookRequest received from Facebook server on webhook, contains messages, delivery reports and/or postbacks
 type FacebookRequest struct {
 	Entry []struct {
-		ID        int64 `json:"id,string"`
+		ID        int64 `json:"id"`
 		Messaging []struct {
 			Recipient struct {
 				ID int64 `json:"id,string"`
@@ -13,24 +13,33 @@ type FacebookRequest struct {
 			Sender struct {
 				ID int64 `json:"id,string"`
 			} `json:"sender"`
-			Timestamp int `json:"timestamp"`
-			Message   *struct {
-				Mid  string `json:"mid"`
-				Seq  int    `json:"seq"`
-				Text string `json:"text"`
-			} `json:"message,omitempty"`
-			Delivery *struct {
-				Mids      []string `json:"mids"`
-				Seq       int      `json:"seq"`
-				Watermark int      `json:"watermark"`
-			} `json:"delivery"`
-			Postback *struct {
-				Payload string `json:"payload"`
-			} `json:"postback"`
+			Timestamp int               `json:"timestamp"`
+			Message   *FacebookMessage  `json:"message,omitempty"`
+			Delivery  *FacebookDelivery `json:"delivery"`
+			Postback  *FacebookPostback `json:"postback"`
 		} `json:"messaging"`
 		Time int `json:"time"`
 	} `json:"entry"`
 	Object string `json:"object"`
+}
+
+// FacebookMessage struct for text messaged received from facebook server
+type FacebookMessage struct {
+	Mid  string `json:"mid"`
+	Seq  int    `json:"seq"`
+	Text string `json:"text"`
+}
+
+// FacebookDelivery struct for delivery reports received from Facebook server
+type FacebookDelivery struct {
+	Mids      []string `json:"mids"`
+	Seq       int      `json:"seq"`
+	Watermark int      `json:"watermark"`
+}
+
+// FacebookPostback struct for postbacks received from Facebook server
+type FacebookPostback struct {
+	Payload string `json:"payload"`
 }
 
 // rawFBResponse received from Facebook server after sending the message
