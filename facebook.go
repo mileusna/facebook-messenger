@@ -23,21 +23,21 @@ type FacebookRequest struct {
 	Object string `json:"object"`
 }
 
-// FacebookMessage struct for text messaged received from facebook server
+// FacebookMessage struct for text messaged received from facebook server as part of FacebookRequest struct
 type FacebookMessage struct {
 	Mid  string `json:"mid"`
 	Seq  int    `json:"seq"`
 	Text string `json:"text"`
 }
 
-// FacebookDelivery struct for delivery reports received from Facebook server
+// FacebookDelivery struct for delivery reports received from Facebook server as part of FacebookRequest struct
 type FacebookDelivery struct {
 	Mids      []string `json:"mids"`
 	Seq       int      `json:"seq"`
 	Watermark int      `json:"watermark"`
 }
 
-// FacebookPostback struct for postbacks received from Facebook server
+// FacebookPostback struct for postbacks received from Facebook server  as part of FacebookRequest struct
 type FacebookPostback struct {
 	Payload string `json:"payload"`
 }
