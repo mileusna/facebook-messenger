@@ -1,49 +1,56 @@
 package messenger
 
-// messenger := &messenger.Messenger {
-//     VerifyToken: "VERIFY_TOKEN/optional",
-//     AppSecret: "APP_SECRET/optional",
-//     AccessToken: "PAGE_ACCESS_TOKEN",
-//     PageID: "PAGE_ID/optional",
-// }
-
 // ButtonType for buttons, it can be ButtonTypeWebURL or ButtonTypePostback
 type ButtonType string
 
+// AttachmentType describes attachment type in GenericMessage
 type AttachmentType string
 
+// TemplateType of template in GenericMessage
 type TemplateType string
 
+// NotificationType for sent messages
 type NotificationType string
 
+// Message interface that represents all type of messages that we can send to Facebook Messenger
 type Message interface {
 	foo()
 }
 
-func (m TextMessage) foo()    {}
-func (m GenericMessage) foo() {}
+func (m TextMessage) foo()    {} // Message interface
+func (m GenericMessage) foo() {} // Message interface
 
 const (
 	// ButtonTypeWebURL is type for web links
 	ButtonTypeWebURL = ButtonType("web_url")
+
 	//ButtonTypePostback is type for postback buttons that sends data back to webhook
 	ButtonTypePostback = ButtonType("postback")
 
+	// AttachmentTypeTemplate for template attachments
 	AttachmentTypeTemplate = AttachmentType("template")
 
+	// TemplateTypeGeneric for generic message templates
 	TemplateTypeGeneric = TemplateType("generic")
 
-	NotificationTypeRegular    = NotificationType("REGULAR")
-	NotificationTypeSilentPusg = NotificationType("SILENT_PUSH")
-	NotificationTypeNoPush     = NotificationType("NO_PUSH")
+	// NotificationTypeRegular for regular notification type
+	NotificationTypeRegular = NotificationType("REGULAR")
+
+	// NotificationTypeSilentPush for silent push
+	NotificationTypeSilentPush = NotificationType("SILENT_PUSH")
+
+	// NotificationTypeNoPush for no push
+	NotificationTypeNoPush = NotificationType("NO_PUSH")
 )
 
+// TextMessage struct used for sending text messages to messenger
 type TextMessage struct {
 	Message          textMessageContent `json:"message"`
 	Recipient        recipient          `json:"recipient"`
 	NotificationType NotificationType   `json:"notification_type,omitempty"`
 }
 
+// GenericMessage struct used for sending structural messages to messenger (messages with images, links, and buttons)
 type GenericMessage struct {
 	Message          genericMessageContent `json:"message"`
 	Recipient        recipient             `json:"recipient"`
@@ -61,11 +68,6 @@ type textMessageContent struct {
 type genericMessageContent struct {
 	Attachment *attachment `json:"attachment,omitempty"`
 }
-
-// type MessageData struct {
-// 	Text       string      `json:"text,omitempty"`
-// 	Attachment *Attachment `json:"attachment,omitempty"`
-// }
 
 type attachment struct {
 	Type    string  `json:"type,omitempty"`
