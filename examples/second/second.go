@@ -26,8 +26,8 @@ func main() {
 // myHandler is you regular http Handler
 func myHandler(w http.ResponseWriter, r *http.Request) {
 
-	// decode entire request received from Facebook into FacebookRequest struct
-	fbRequest, _ := messenger.DecodeRequest(r)
+	msng.VerifyWebhook(w, r)                   // verify webhook if asked from Facebook
+	fbRequest, _ := messenger.DecodeRequest(r) // decode entire request received from Facebook into FacebookRequest struct
 
 	// now you have it all and you can do whatever you want with received request
 	// enumerate each entry, and each message in entry
