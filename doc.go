@@ -19,6 +19,7 @@ Example:
     func main() {
         msng := &messenger.Messenger{
             AccessToken:     "YOUR_ACCESS_TOKEN_THAT_YOU_WILL_GENERATE_FOR_YOUR_PAGE_ON_FACEBOOK",
+            VerifyToken:     "YOUR_SECRET_TOKEN_FOR_VERIFYING_WEBHOOK_PUT_THE_SAME_VALUE_HERE_AND_ON_FB",
             PageID:          "YOUR_PAGE_ID",
             MessageReceived: messageReceived, // your function for handling received messages, defined below
         }
@@ -44,19 +45,17 @@ Example:
             msng.SendTextMessage(userID, "Hello there")
 
         case "send me website":
-            // now lets send him some structured message with image, link and buttons
-            // if we don't need buttons, we can use AddNewElement
+            // now lets send him some structured message with image and link
             gm := msng.NewGenericMessage(userID)
-            gm.AddNewElement("Title", "Subtitle", "http://mysite.com", "http://mysite.com/some-photo.jpeg")
+            gm.AddNewElement("Title", "Subtitle", "http://mysite.com", "http://mysite.com/some-photo.jpeg", nil)
 
             // GenericMessage can contain up to 10 elements, they are represented as cards and can be scoreled horicontally in messenger
             // So lets add one more element, this time with buttons
-            e := msng.NewElement("Site title", "Subtitle", "http://mysite.com", "http://mysite.com/some-photo.jpeg")
-            e.AddWebURLButton("Contact US", "http://mysite.com/contact")
-            e.AddPostbackButton("Ok", "THIS_DATA_YOU_WILL_RECEIVE_AS_POSTBACK_WHEN_USER_CLICK_THE_BUTTON")
-            gm.AddElement(e)
+            btn1 := msng.NewWebURLButton("Contact US", "http://mysite.com/contact")
+            btn2 := msng.NewPostbackButton("Ok", "THIS_DATA_YOU_WILL_RECEIVE_AS_POSTBACK_WHEN_USER_CLICK_THE_BUTTON")
+            gm.AddNewElement("Site title", "Subtitle", "http://mysite.com", "http://mysite.com/some-photo.jpeg", []messenger.Button{btn1, btn2})
 
-            // ok, message is ready, lets sent
+            // ok, message is ready, lets send
             msng.SendMessage(gm)
 
         default:
@@ -69,7 +68,7 @@ Example:
                 return // if there is an error, resp is empty struct, useless
             }
             log.Println("Message ID", resp.MessageID, "sent to user", resp.RecipientID)
-            // store resp.MessageID if you want to track delivery reports that will be sent later from google
+            // store resp.MessageID if you want to track delivery reports that will be sent later from Facebook
         }
     }
 

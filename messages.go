@@ -121,37 +121,54 @@ func (msng Messenger) NewGenericMessage(userID int64) GenericMessage {
 }
 
 // AddNewElement adds element to Generic template message with defined title, subtitle, link url and image url
-// Only title is mandatory, other params can be empty string
-// Generic messages can have up to 10 elements which are scolled horizontaly in users messenger
-func (m *GenericMessage) AddNewElement(title, subtitle, itemURL, imageURL string) {
-	m.AddElement(newElement(title, subtitle, itemURL, imageURL))
+// Title param is mandatory. If not used set "" for other params and nil for buttons param
+// Generic messages can have up to 10 elements which are scolled horizontaly in Facebook messenger
+func (m *GenericMessage) AddNewElement(title, subtitle, itemURL, imageURL string, buttons []Button) {
+	m.AddElement(newElement(title, subtitle, itemURL, imageURL, buttons))
 }
 
 // AddElement adds element e to Generic Message
-// Generic messages can have up to 10 elements which are scolled horizontaly in users messenger
-// If element contain buttons, you can create element with NewElement, than add some buttons with
-// AddWebURLButton and AddPostbackButton and add it to message using this method
+// Generic messages can have up to 10 elements which are scolled horizontaly in Facebook messenger
 func (m *GenericMessage) AddElement(e Element) {
 	m.Message.Attachment.Payload.Elements = append(m.Message.Attachment.Payload.Elements, e)
 }
 
 // NewElement creates new element with defined title, subtitle, link url and image url
-// Only title is mandatory, other params can be empty string
+// Title param is mandatory. If not used set "" for other params and nil for buttons param
 // Instead of calling this function you can also initialize Element struct, depends what you prefere
-func (msng Messenger) NewElement(title, subtitle, itemURL, imageURL string) Element {
-	return newElement(title, subtitle, itemURL, imageURL)
+func (msng Messenger) NewElement(title, subtitle, itemURL, imageURL string, buttons []Button) Element {
+	return newElement(title, subtitle, itemURL, imageURL, buttons)
 }
 
-func newElement(title, subtitle, itemURL, imageURL string) Element {
+func newElement(title, subtitle, itemURL, imageURL string, buttons []Button) Element {
 	return Element{
 		Title:    title,
 		Subtitle: subtitle,
 		ItemURL:  itemURL,
 		ImageURL: imageURL,
+		Buttons:  buttons,
 	}
 }
 
-// AddWebURLButton adds web link URL button to the element
+// NewWebURLButton creates new web url button
+func (msng Messenger) NewWebURLButton(title, URL string) Button {
+	return Button{
+		Type:  ButtonTypeWebURL,
+		Title: title,
+		URL:   URL,
+	}
+}
+
+// NewPostbackButton creates new postback button that sends payload string back to webhook when pressed
+func (msng Messenger) NewPostbackButton(title, payload string) Button {
+	return Button{
+		Type:    ButtonTypePostback,
+		Title:   title,
+		Payload: payload,
+	}
+}
+
+// AddWebURLButton creates and adds web link URL button to the element
 func (e *Element) AddWebURLButton(title, URL string) {
 	b := Button{
 		Type:  ButtonTypeWebURL,
@@ -161,7 +178,7 @@ func (e *Element) AddWebURLButton(title, URL string) {
 	e.Buttons = append(e.Buttons, b)
 }
 
-// AddPostbackButton adds button that sends payload string back to webhook when pressed
+// AddPostbackButton creates and adds button that sends payload string back to webhook when pressed
 func (e *Element) AddPostbackButton(title, payload string) {
 	b := Button{
 		Type:    ButtonTypePostback,
