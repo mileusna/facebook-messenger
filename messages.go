@@ -96,21 +96,21 @@ type Button struct {
 	Payload string     `json:"payload,omitempty"`
 }
 
-// NewTextMessage creates new text message for receiverID
+// NewTextMessage creates new text message for userID
 // This function is here for convenient reason, you will
 // probably use shorthand version SentTextMessage which sends message immediatly
-func NewTextMessage(receiverID int64, text string) TextMessage {
+func (msng Messenger) NewTextMessage(userID int64, text string) TextMessage {
 	return TextMessage{
-		Recipient: recipient{ID: receiverID},
+		Recipient: recipient{ID: userID},
 		Message:   textMessageContent{Text: text},
 	}
 }
 
-// NewGenericMessage creates new Generic Template message for receiverID
+// NewGenericMessage creates new Generic Template message for userID
 // Generic template messages are used for structured messages with images, links, buttons and postbacks
-func NewGenericMessage(receiverID int64) GenericMessage {
+func (msng Messenger) NewGenericMessage(userID int64) GenericMessage {
 	return GenericMessage{
-		Recipient: recipient{ID: receiverID},
+		Recipient: recipient{ID: userID},
 		Message: genericMessageContent{
 			Attachment: &attachment{
 				Type:    "template",
@@ -124,7 +124,7 @@ func NewGenericMessage(receiverID int64) GenericMessage {
 // Only title is mandatory, other params can be empty string
 // Generic messages can have up to 10 elements which are scolled horizontaly in users messenger
 func (m *GenericMessage) AddNewElement(title, subtitle, itemURL, imageURL string) {
-	m.AddElement(NewElement(title, subtitle, itemURL, imageURL))
+	m.AddElement(newElement(title, subtitle, itemURL, imageURL))
 }
 
 // AddElement adds element e to Generic Message
@@ -138,14 +138,17 @@ func (m *GenericMessage) AddElement(e Element) {
 // NewElement creates new element with defined title, subtitle, link url and image url
 // Only title is mandatory, other params can be empty string
 // Instead of calling this function you can also initialize Element struct, depends what you prefere
-func NewElement(title, subtitle, itemURL, imageURL string) Element {
-	e := Element{
+func (msng Messenger) NewElement(title, subtitle, itemURL, imageURL string) Element {
+	return newElement(title, subtitle, itemURL, imageURL)
+}
+
+func newElement(title, subtitle, itemURL, imageURL string) Element {
+	return Element{
 		Title:    title,
 		Subtitle: subtitle,
 		ItemURL:  itemURL,
 		ImageURL: imageURL,
 	}
-	return e
 }
 
 // AddWebURLButton adds web link URL button to the element
