@@ -15,9 +15,11 @@ var TestURL = ""
 // Messenger struct
 type Messenger struct {
 	AccessToken string
+	VerifyToken string
 	PageID      string
-	apiURL      string
-	pageURL     string
+
+	apiURL  string
+	pageURL string
 
 	// MessageReceived event fires when message from Facebook received
 	MessageReceived func(msng *Messenger, userID int64, m FacebookMessage)
@@ -72,14 +74,12 @@ func (msng Messenger) SendTextMessage(receiverID int64, text string) (FacebookRe
 
 // ServeHTTP is HTTP handler for Messenger so it could be directly used as http.Handler
 func (msng *Messenger) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
-	fbRq, _ := DecodeRequest(r)
+	msng.VerifyWebhook(w, r)    // verify webhook if needed
+	fbRq, _ := DecodeRequest(r) // get FacebookRequest object
 
 	for _, entry := range fbRq.Entry {
-		//pageID := entry.ID
 		for _, msg := range entry.Messaging {
 			userID := msg.Sender.ID
-
 			switch {
 			case msg.Message != nil && msng.MessageReceived != nil:
 				go msng.MessageReceived(msng, userID, *msg.Message)
@@ -90,6 +90,18 @@ func (msng *Messenger) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			case msg.Postback != nil && msng.PostbackReceived != nil:
 				go msng.PostbackReceived(msng, userID, *msg.Postback)
 			}
+		}
+	}
+}
+
+// VerifyWebhook verifies your webhook by checking VerifyToken and sending challange back to Facebook
+func (msng Messenger) VerifyWebhook(w http.ResponseWriter, r *http.Request) {
+	// Facebook sends this query for verifying webhooks
+	// hub.mode=subscribe&hub.challenge=1085525140&hub.verify_token=moj_token
+	if r.FormValue("hub.mode") == "subscribe" {
+		if r.FormValue("hub.verify_token") == msng.VerifyToken {
+			w.Write([]byte(r.FormValue("hub.challenge")))
+			return
 		}
 	}
 }
