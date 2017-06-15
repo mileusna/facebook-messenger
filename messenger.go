@@ -113,11 +113,7 @@ func DecodeRequest(r *http.Request) (FacebookRequest, error) {
 	defer r.Body.Close()
 	var fbRq FacebookRequest
 	err := json.NewDecoder(r.Body).Decode(&fbRq)
-	if err != nil {
-		return fbRq, err //log.Println("!!!!", err)
-	}
-
-	return fbRq, nil
+	return fbRq, err
 }
 
 // decodeResponse decodes Facebook response after sending message, usually contains MessageID or Error
@@ -126,7 +122,7 @@ func decodeResponse(r *http.Response) (FacebookResponse, error) {
 	var fbResp rawFBResponse
 	err := json.NewDecoder(r.Body).Decode(&fbResp)
 	if err != nil {
-		return FacebookResponse{}, nil
+		return FacebookResponse{}, err
 	}
 
 	if fbResp.Error != nil {
