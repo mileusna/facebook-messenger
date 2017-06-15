@@ -1,6 +1,6 @@
 # Facebook Messenger for Go
 
-Facebook Messenger API for Go, essential API used fro Facebook chat bots
+Facebook Messenger API for Go, essential API used for Facebook chat bots [![GoDoc](https://godoc.org/github.com/mileusna/facebookmessenger?status.svg)](https://godoc.org/github.com/mileusna/facebookmessenger)
 
 It can send and receive messages from Facebook Messenger.
 
