@@ -1,4 +1,4 @@
-# Facebook Messenger for Go [![GoDoc](https://godoc.org/github.com/mileusna/facebookmessenger?status.svg)](https://godoc.org/github.com/mileusna/facebookmessenger)
+# Facebook Messenger for Go [![GoDoc](https://godoc.org/github.com/mileusna/facebook-messenger?status.svg)](https://godoc.org/github.com/mileusna/facebook-messenger)
 
 Facebook Messenger API for Go, essential API used for Facebook chat bots 
 
